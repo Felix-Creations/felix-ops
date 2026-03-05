@@ -1,0 +1,73 @@
+{
+  "date": "2026-03-05",
+  "timestamp": "2026-03-05T17:48:29.345324",
+  "reddit": {
+    "passive_income": [
+      {
+        "error": "HTTP Error 403: Blocked"
+      }
+    ],
+    "EntrepreneurRideAlong": [
+      {
+        "error": "HTTP Error 403: Blocked"
+      }
+    ],
+    "SideProject": [
+      {
+        "error": "HTTP Error 403: Blocked"
+      }
+    ],
+    "digitalmarketing": [
+      {
+        "error": "HTTP Error 403: Blocked"
+      }
+    ],
+    "productivity": [
+      {
+        "error": "HTTP Error 403: Blocked"
+      }
+    ]
+  },
+  "gumroad_demand": [
+    {
+      "query": "notion template",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "productivity template",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "ai prompt pack",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "chatgpt prompts",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "budget spreadsheet",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "digital planner",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "finance tracker",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "passive income",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "digital products",
+      "gumroad_results_proxy": 0
+    },
+    {
+      "query": "canva templates",
+      "gumroad_results_proxy": 0
+    }
+  ]
+}
