@@ -1,114 +1,79 @@
 #!/usr/bin/env python3
 """
-demand/trend-scraper.py
-Felix Ops — Demand Sensing Module
-Runs every 6-12 hours. Pulls trending data from free sources.
-Stores results in analytics/trends/YYYY-MM-DD.json
+demand/trend-scraper.py — Felix Ops Demand Sensing
+Runs every 6-12h. Uses Google Trends + Gumroad public pages.
+Results saved to analytics/trends/YYYY-MM-DD.json
 """
-
-import json
-import os
-import urllib.request
-import urllib.parse
-from datetime import datetime, timedelta
-
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '../../analytics/trends')
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+import json, os, urllib.request, urllib.parse, re
+from datetime import datetime
 
 TODAY = datetime.now().strftime('%Y-%m-%d')
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, f'{TODAY}.json')
+OUT_DIR = os.path.join(os.path.dirname(__file__), '../../analytics/trends')
+os.makedirs(OUT_DIR, exist_ok=True)
+OUT_FILE = os.path.join(OUT_DIR, f'{TODAY}.json')
 
-NICHES = [
-    "notion template",
-    "productivity template",
-    "ai prompt pack",
-    "chatgpt prompts",
-    "budget spreadsheet",
-    "digital planner",
-    "finance tracker",
-    "passive income",
-    "digital products",
-    "canva templates",
-]
+NICHES = ["notion template", "productivity template", "ai prompt pack",
+          "chatgpt prompts", "budget spreadsheet", "digital planner",
+          "finance tracker", "canva templates", "passive income"]
 
-def fetch_google_trends_rss(keyword):
-    """Fetch Google Trends RSS for a keyword (free, no auth)."""
-    encoded = urllib.parse.quote(keyword)
-    url = f"https://trends.google.com/trends/trendingsearches/daily/rss?geo=AU"
+HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"}
+
+def fetch(url, timeout=12):
     try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            return resp.read().decode('utf-8', errors='ignore')
+        req = urllib.request.Request(url, headers=HEADERS)
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read().decode('utf-8', errors='ignore')
     except Exception as e:
-        return f"ERROR: {e}"
+        return f"ERROR:{e}"
 
-def fetch_gumroad_discover(keyword):
-    """Check Gumroad discover for a keyword — free public endpoint."""
-    encoded = urllib.parse.quote(keyword)
-    url = f"https://gumroad.com/discover?query={encoded}&sort=top"
-    try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            content = resp.read().decode('utf-8', errors='ignore')
-            # Count product listings as a proxy for demand
-            product_count = content.count('"productCard"') + content.count('class="product"')
-            return {"query": keyword, "gumroad_results_proxy": product_count}
-    except Exception as e:
-        return {"query": keyword, "error": str(e)}
+def gumroad_demand(kw):
+    url = f"https://gumroad.com/discover?query={urllib.parse.quote(kw)}&sort=top"
+    html = fetch(url)
+    if html.startswith("ERROR"):
+        return {"kw": kw, "error": html}
+    # Extract product names and prices
+    prices = re.findall(r'"\$[\d.]+(?:\+)?"', html)
+    titles = re.findall(r'"name":"([^"]{5,80})"', html)[:5]
+    return {"kw": kw, "price_points": len(prices), "sample_titles": titles[:3]}
 
-def fetch_reddit_hot(subreddit):
-    """Fetch hot posts from a subreddit — free JSON endpoint."""
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=25"
-    try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'felix-demand-bot/1.0'})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode())
-            posts = data.get('data', {}).get('children', [])
-            return [
-                {
-                    "title": p['data']['title'],
-                    "score": p['data']['score'],
-                    "comments": p['data']['num_comments'],
-                    "url": f"https://reddit.com{p['data']['permalink']}"
-                }
-                for p in posts[:10]
-            ]
-    except Exception as e:
-        return [{"error": str(e)}]
+def google_trends_daily(geo="AU"):
+    url = f"https://trends.google.com/trends/trendingsearches/daily/rss?geo={geo}"
+    xml = fetch(url)
+    if xml.startswith("ERROR"):
+        return []
+    topics = re.findall(r'<title><!\[CDATA\[([^\]]+)\]\]></title>', xml)
+    return topics[:15]
 
-SUBREDDITS = [
-    "passive_income",
-    "EntrepreneurRideAlong",
-    "SideProject",
-    "digitalmarketing",
-    "productivity",
-]
+def hacker_news_top():
+    html = fetch("https://news.ycombinator.com/")
+    if html.startswith("ERROR"):
+        return []
+    titles = re.findall(r'class="titleline"[^>]*><a[^>]*>([^<]{10,100})</a>', html)
+    return titles[:10]
 
 def run():
-    print(f"[{TODAY}] Felix Demand Sensing — starting...")
+    print(f"[{TODAY}] Demand sensing...")
     results = {
         "date": TODAY,
         "timestamp": datetime.now().isoformat(),
-        "reddit": {},
-        "gumroad_demand": [],
+        "google_trends_au": google_trends_daily("AU"),
+        "hacker_news": hacker_news_top(),
+        "gumroad_niches": [gumroad_demand(kw) for kw in NICHES],
     }
-
-    # Reddit hot posts
-    for sub in SUBREDDITS:
-        print(f"  Fetching r/{sub}...")
-        results["reddit"][sub] = fetch_reddit_hot(sub)
-
-    # Gumroad demand proxy
-    for kw in NICHES:
-        print(f"  Gumroad check: {kw}...")
-        results["gumroad_demand"].append(fetch_gumroad_discover(kw))
-
-    # Save
-    with open(OUTPUT_FILE, 'w') as f:
+    # Load existing if exists and merge
+    if os.path.exists(OUT_FILE):
+        with open(OUT_FILE) as f:
+            existing = json.load(f)
+        existing.update(results)
+        results = existing
+    with open(OUT_FILE, 'w') as f:
         json.dump(results, f, indent=2)
-
-    print(f"  Saved to {OUTPUT_FILE}")
-    return results
+    # Print summary
+    print(f"  Google AU trends: {len(results['google_trends_au'])} topics")
+    print(f"  HN top: {results['hacker_news'][:3]}")
+    for n in results['gumroad_niches'][:3]:
+        print(f"  Gumroad '{n['kw']}': {n.get('price_points',0)} prices, titles: {n.get('sample_titles',[])}")
+    print(f"  Saved: {OUT_FILE}")
 
 if __name__ == '__main__':
     run()

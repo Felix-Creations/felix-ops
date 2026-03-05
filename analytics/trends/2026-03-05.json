@@ -1,6 +1,6 @@
 {
   "date": "2026-03-05",
-  "timestamp": "2026-03-05T17:48:29.345324",
+  "timestamp": "2026-03-05T18:09:35.317645",
   "reddit": {
     "passive_income": [
       {
@@ -68,6 +68,66 @@
     {
       "query": "canva templates",
       "gumroad_results_proxy": 0
+    }
+  ],
+  "google_trends_au": [],
+  "hacker_news": [
+    "Google Workspace CLI",
+    "You Just Reveived",
+    "MacBook Neo",
+    "The Self-Help Trap: What 20 Years of &quot;Optimizing&quot; Has Taught Me",
+    "Nvidia PersonaPlex 7B on Apple Silicon: Full-Duplex Speech-to-Speech in Swift",
+    "Building a new Flash",
+    "AMD will bring its &quot;Ryzen AI&quot; processors to standard desktop PCs for first time",
+    "Relax NG is a schema language for XML",
+    "Show HN: Poppy \u2013 a simple app to stay intentional with relationships",
+    "Something is afoot in the land of Qwen"
+  ],
+  "gumroad_niches": [
+    {
+      "kw": "notion template",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "productivity template",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "ai prompt pack",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "chatgpt prompts",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "budget spreadsheet",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "digital planner",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "finance tracker",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "canva templates",
+      "price_points": 0,
+      "sample_titles": []
+    },
+    {
+      "kw": "passive income",
+      "price_points": 0,
+      "sample_titles": []
     }
   ]
 }
