@@ -1,0 +1,27 @@
+{
+  "products": [
+    {
+      "name": "Ultimate Productivity Template Pack",
+      "price_aud": 9,
+      "slug": "rkcte",
+      "status": "draft_needs_payout",
+      "url": "https://felixfelicis7.gumroad.com/l/rkcte"
+    },
+    {
+      "name": "Ultimate ChatGPT Prompt Pack",
+      "price_aud": 7,
+      "slug": "umcghi",
+      "status": "draft_needs_payout",
+      "url": "https://felixfelicis7.gumroad.com/l/umcghi"
+    },
+    {
+      "name": "Personal Budget Tracker",
+      "price_aud": 5,
+      "slug": "mmmnwy",
+      "status": "draft_needs_payout",
+      "url": "https://felixfelicis7.gumroad.com/l/mmmnwy"
+    }
+  ],
+  "blocked_by": "Gumroad payout method (Shane to connect PayPal/Stripe at gumroad.com/settings/payments)",
+  "total_potential_revenue_per_sale": 21
+}
