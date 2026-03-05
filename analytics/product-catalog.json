@@ -20,8 +20,15 @@
       "slug": "mmmnwy",
       "status": "draft_needs_payout",
       "url": "https://felixfelicis7.gumroad.com/l/mmmnwy"
+    },
+    {
+      "name": "Freelance Proposal & Contract Pack",
+      "price_aud": 12,
+      "slug": "xuxoi",
+      "status": "draft_needs_payout",
+      "url": "https://felixfelicis7.gumroad.com/l/xuxoi"
     }
   ],
-  "blocked_by": "Gumroad payout method (Shane to connect PayPal/Stripe at gumroad.com/settings/payments)",
-  "total_potential_revenue_per_sale": 21
+  "blocked_by": "Gumroad payout method \u2014 Shane to connect PayPal/Stripe at gumroad.com/settings/payments",
+  "total_catalog_value": 33
 }
