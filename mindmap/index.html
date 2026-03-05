@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Felix — 3-Month Digital Revenue Roadmap</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0f;
+    color: #e8e8e8;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  #header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 12px 24px;
+    background: rgba(13,13,15,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #header h1 { font-size: 15px; font-weight: 600; color: #ff6b35; letter-spacing: 0.5px; }
+  #header span { font-size: 12px; color: #666; }
+  #canvas-wrap {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    cursor: grab;
+    padding-top: 44px;
+  }
+  #canvas-wrap:active { cursor: grabbing; }
+  svg { display: block; }
+
+  .node-group { cursor: pointer; }
+  .node-circle {
+    transition: r 0.15s ease, filter 0.15s ease;
+  }
+  .node-group:hover .node-circle {
+    filter: brightness(1.3);
+  }
+  .node-label {
+    font-size: 13px;
+    fill: #e8e8e8;
+    dominant-baseline: middle;
+    pointer-events: none;
+    font-weight: 500;
+  }
+  .node-label.root {
+    font-size: 18px;
+    font-weight: 700;
+    fill: #fff;
+  }
+  .node-label.month {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .link {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    opacity: 0.5;
+  }
+
+  .legend {
+    position: fixed;
+    bottom: 20px;
+    left: 24px;
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: #666;
+    background: rgba(13,13,15,0.8);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .tooltip {
+    position: fixed;
+    background: rgba(20,20,25,0.96);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #ccc;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 260px;
+    line-height: 1.5;
+    z-index: 200;
+  }
+  .tooltip.visible { opacity: 1; }
+  .tooltip strong { color: #fff; display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>🦊 FELIX — Digital Revenue System</h1>
+  <span>3-Month Roadmap · Drag to pan · Hover nodes for details</span>
+</div>
+
+<div id="canvas-wrap">
+  <svg id="svg"></svg>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#ff6b35"></div>Core</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4ecdc4"></div>Month 1: Foundation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#45b7d1"></div>Month 2: Testing</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#96ceb4"></div>Month 3: Scaling</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffd93d"></div>Support Systems</div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const data = {
+  id: 'root', label: '🦊 FELIX', sublabel: 'Digital Revenue System', color: '#ff6b35', r: 38,
+  details: 'Autonomous digital business agent. Build sustainable compounding revenue through digital products and content.',
+  children: [
+    {
+      id: 'm1', label: 'MONTH 1', sublabel: 'Foundation', color: '#4ecdc4', r: 28,
+      details: 'Weeks 1–4. Setup all accounts, workspace, logging, and analytics. Zero spend target.',
+      children: [
+        {
+          id: 'm1a', label: 'Identity & Accounts', color: '#4ecdc4', r: 20,
+          details: '• ProtonMail: felixfelicis01@proton.me\n• Gumroad (free seller)\n• GitHub: felix-ops\n• TikTok, Instagram, YouTube\n• Canva free',
+          children: [
+            { id: 'm1a1', label: 'felixfelicis01\n@proton.me', color: '#4ecdc4', r: 14, details: 'Anchor email for all account creation. Use for verification and comms.' },
+            { id: 'm1a2', label: 'Gumroad\n(free)', color: '#4ecdc4', r: 14, details: 'Primary storefront for digital products. 10% fee, no monthly cost. Zero risk to start.' },
+            { id: 'm1a3', label: 'GitHub\nfelix-ops', color: '#4ecdc4', r: 14, details: 'Store all scripts, automation, logs, and changelogs. Version controlled.' },
+            { id: 'm1a4', label: 'TikTok /\nInstagram /\nYouTube', color: '#4ecdc4', r: 14, details: 'Distribution channels. TikTok = fastest organic growth. YouTube Shorts = long-tail. Instagram = visual trust-building.' },
+          ]
+        },
+        {
+          id: 'm1b', label: 'Workspace', color: '#3dbdb5', r: 20,
+          details: '• Google Sheets master dashboard\n• GitHub repo structure\n• Daily log template\n• File naming conventions',
+          children: [
+            { id: 'm1b1', label: 'Google Sheets\nDashboard', color: '#3dbdb5', r: 14, details: 'Live tracking: posts published, views, clicks, revenue, costs, tasks. Shared with Shane.' },
+            { id: 'm1b2', label: 'Daily Log\nSystem', color: '#3dbdb5', r: 14, details: 'Automated daily log: actions taken, results, next steps. Auditable trail.' },
+          ]
+        },
+        {
+          id: 'm1c', label: 'Analytics Setup', color: '#2ea89f', r: 20,
+          details: '• Google Analytics 4\n• Native platform analytics\n• UTM tracking parameters\n• Conversion goal setup',
+          children: [
+            { id: 'm1c1', label: 'Google\nAnalytics 4', color: '#2ea89f', r: 14, details: 'Free. Track all traffic sources, conversions, and product page visits.' },
+            { id: 'm1c2', label: 'UTM\nTracking', color: '#2ea89f', r: 14, details: 'Tag all links with UTM params to know exactly which content drives sales.' },
+          ]
+        },
+      ]
+    },
+    {
+      id: 'm2', label: 'MONTH 2', sublabel: 'Testing', color: '#45b7d1', r: 28,
+      details: 'Weeks 5–8. Run demand sensing, build product library, post content daily, measure everything.',
+      children: [
+        {
+          id: 'm2a', label: 'Demand Sensing', color: '#45b7d1', r: 20,
+          details: '• Google Trends (free)\n• TikTok trending sounds/tags\n• Reddit comment mining\n• Gumroad bestseller research\n• YouTube comment scraping',
+          children: [
+            { id: 'm2a1', label: 'Trend\nMonitoring', color: '#45b7d1', r: 14, details: 'Google Trends + TikTok Creative Center. Run every 48h. Log trending topics with search volume proxy.' },
+            { id: 'm2a2', label: 'Competitor\nResearch', color: '#45b7d1', r: 14, details: 'Find top Gumroad sellers in 3 niches. Analyse pricing, reviews, and positioning.' },
+          ]
+        },
+        {
+          id: 'm2b', label: 'Product Library', color: '#3aa8c1', r: 20,
+          details: 'Target: 5-10 lightweight digital products tested across 3 niches. Formats: PDF guides, templates, Notion dashboards, prompt packs.',
+          children: [
+            { id: 'm2b1', label: 'Niche 1:\nProductivity', color: '#3aa8c1', r: 14, details: 'Templates, planners, Notion dashboards. High demand, easy to produce, $7–$27 range.' },
+            { id: 'm2b2', label: 'Niche 2:\nAI / Tech\nTools', color: '#3aa8c1', r: 14, details: 'Prompt packs, AI workflow guides, automation templates. Fast-growing market.' },
+            { id: 'm2b3', label: 'Niche 3:\nFinance\nTemplates', color: '#3aa8c1', r: 14, details: 'Budget trackers, investment calculators, savings planners. Evergreen demand.' },
+          ]
+        },
+        {
+          id: 'm2c', label: 'Content Engine', color: '#2d96b0', r: 20,
+          details: '3 TikToks/day, 1 Reel/day, 2 Shorts/week. Test hooks, CTAs, formats. Build posting schedule.',
+          children: [
+            { id: 'm2c1', label: 'TikTok\nEngine', color: '#2d96b0', r: 14, details: '3x/day. Test: hook variations, trending audio, "problem → solution" format. Link in bio to Gumroad.' },
+            { id: 'm2c2', label: 'Email\nCapture', color: '#2d96b0', r: 14, details: 'Brevo free tier (300 emails/day). Lead magnet: free mini-product. Build owned audience.' },
+          ]
+        },
+      ]
+    },
+    {
+      id: 'm3', label: 'MONTH 3', sublabel: 'Scaling', color: '#96ceb4', r: 28,
+      details: 'Weeks 9–12. Double down on top 5% performers. Build full funnel. Introduce paid ads if validated.',
+      children: [
+        {
+          id: 'm3a', label: 'Double Down', color: '#96ceb4', r: 20,
+          details: 'Take top 5% of content + top product. Improve, re-package, cross-sell. Build proper sales page.',
+          children: [
+            { id: 'm3a1', label: 'Winner\nProduct', color: '#96ceb4', r: 14, details: 'Full funnel: landing page → upsell → email sequence. Improve based on reviews and conversion data.' },
+            { id: 'm3a2', label: 'Funnel\nOptimisation', color: '#96ceb4', r: 14, details: 'A/B test pricing, headlines, thumbnails. Aim for 2–5% conversion rate on traffic.' },
+          ]
+        },
+        {
+          id: 'm3b', label: 'Paid Acquisition\n(if validated)', color: '#80bea0', r: 20,
+          details: '⚠️ REQUIRES APPROVAL. Only after organic revenue validates the offer. Start with $5–10/day test budgets.',
+          children: [
+            { id: 'm3b1', label: 'TikTok Ads\n⚠️ Approval', color: '#80bea0', r: 14, details: 'Topview/In-Feed ads. Only after organic content proves the hook works. Minimum $20 AUD test.' },
+            { id: 'm3b2', label: 'Meta Ads\n⚠️ Approval', color: '#80bea0', r: 14, details: 'Retargeting warm audiences from organic. Low budget to start. Approval required.' },
+          ]
+        },
+        {
+          id: 'm3c', label: 'Automation', color: '#6aae8a', r: 20,
+          details: 'Zapier free tier: order → Google Sheets → WhatsApp alert. Auto-reporting scripts in GitHub.',
+          children: [
+            { id: 'm3c1', label: 'Zapier\nFlows', color: '#6aae8a', r: 14, details: 'Gumroad new order → log to Google Sheets → WhatsApp alert to Shane. Free tier: 100 tasks/month.' },
+            { id: 'm3c2', label: 'Revenue\nTarget', color: '#6aae8a', r: 14, details: 'Month 3 target: cover AI costs ($300 AUD). Month 4+: profit. Conservative but validated.' },
+          ]
+        },
+      ]
+    },
+    {
+      id: 'sys', label: 'SYSTEMS', sublabel: 'Always Running', color: '#ffd93d', r: 24,
+      details: 'Ongoing systems that run in parallel across all 3 months.',
+      children: [
+        {
+          id: 'sys1', label: 'Daily\n5pm Report', color: '#ffd93d', r: 18,
+          details: 'WhatsApp report every day at 5pm AEST:\n• Actions done\n• Revenue today\n• Token usage\n• Next steps\n• Approvals needed'
+        },
+        {
+          id: 'sys2', label: 'GitHub\nLogs', color: '#e6c535', r: 18,
+          details: 'All scripts, automation helpers, changelogs. Auditable history. Shane can review any time.'
+        },
+        {
+          id: 'sys3', label: 'Budget\nGovernance', color: '#ccb030', r: 18,
+          details: '$300 AUD AI cap. $500 AUD total tools cap. Stop and alert if approaching limit. Revenue > costs always.'
+        },
+        {
+          id: 'sys4', label: 'Approval\nProtocol', color: '#b89c2a', r: 18,
+          details: 'Any paid tool, legal exposure, or structural change → send proposal via WhatsApp. Wait for approval before proceeding.'
+        },
+      ]
+    },
+  ]
+};
+
+// Layout engine
+const W = window.innerWidth;
+const H = window.innerHeight - 44;
+const cx = W / 2;
+const cy = H / 2;
+
+// Position calculation
+function layout(node, x, y, angle, depth) {
+  node.x = x;
+  node.y = y;
+  if (!node.children) return;
+
+  const spread = depth === 0 ? Math.PI * 2 : Math.PI * 0.75;
+  const count = node.children.length;
+  const startAngle = angle - spread / 2;
+
+  const radii = [0, 200, 135, 85];
+  const r = radii[depth] || 80;
+
+  node.children.forEach((child, i) => {
+    const a = count === 1 ? angle : startAngle + (spread / (count - 1)) * i;
+    const cx2 = x + Math.cos(a) * r;
+    const cy2 = y + Math.sin(a) * r;
+    layout(child, cx2, cy2, a, depth + 1);
+  });
+}
+
+// Assign angles to top-level children
+function layoutRoot(root) {
+  root.x = cx;
+  root.y = cy;
+  const count = root.children.length;
+  root.children.forEach((child, i) => {
+    const angle = (Math.PI * 2 / count) * i - Math.PI / 2;
+    layout(child, cx + Math.cos(angle) * 230, cy + Math.sin(angle) * 180, angle, 1);
+  });
+}
+
+layoutRoot(data);
+
+// Flatten
+function flatten(node, arr = []) {
+  arr.push(node);
+  if (node.children) node.children.forEach(c => flatten(c, arr));
+  return arr;
+}
+
+function links(node, arr = []) {
+  if (node.children) node.children.forEach(c => {
+    arr.push({ source: node, target: c, color: node.color });
+    links(c, arr);
+  });
+  return arr;
+}
+
+const allNodes = flatten(data);
+const allLinks = links(data);
+
+// SVG
+const svg = document.getElementById('svg');
+svg.setAttribute('width', W);
+svg.setAttribute('height', H);
+svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+// Defs — gradient bg
+const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+svg.appendChild(defs);
+
+// Pan state
+let panX = 0, panY = 0, isPanning = false, startX, startY;
+const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+svg.appendChild(g);
+
+document.getElementById('canvas-wrap').addEventListener('mousedown', e => {
+  isPanning = true;
+  startX = e.clientX - panX;
+  startY = e.clientY - panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = e.clientX - startX;
+  panY = e.clientY - startY;
+  g.setAttribute('transform', `translate(${panX},${panY})`);
+});
+window.addEventListener('mouseup', () => isPanning = false);
+
+// Draw links
+allLinks.forEach(l => {
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const mx = (l.source.x + l.target.x) / 2;
+  const my = (l.source.y + l.target.y) / 2 - 20;
+  path.setAttribute('d', `M${l.source.x},${l.source.y} Q${mx},${my} ${l.target.x},${l.target.y}`);
+  path.setAttribute('class', 'link');
+  path.setAttribute('stroke', l.color);
+  g.appendChild(path);
+});
+
+// Draw nodes
+const tooltip = document.getElementById('tooltip');
+
+allNodes.forEach(node => {
+  const grp = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  grp.setAttribute('class', 'node-group');
+  grp.setAttribute('transform', `translate(${node.x},${node.y})`);
+
+  // Glow
+  const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  glow.setAttribute('r', (node.r || 16) + 6);
+  glow.setAttribute('fill', node.color);
+  glow.setAttribute('opacity', '0.12');
+  grp.appendChild(glow);
+
+  // Circle
+  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('r', node.r || 16);
+  circle.setAttribute('fill', node.color);
+  circle.setAttribute('class', 'node-circle');
+  circle.setAttribute('opacity', '0.92');
+  grp.appendChild(circle);
+
+  // Label
+  const lines = node.label.split('\n');
+  lines.forEach((line, i) => {
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('class', node.id === 'root' ? 'node-label root' : (node.id.length === 2 ? 'node-label month' : 'node-label'));
+    text.setAttribute('text-anchor', 'middle');
+    const lineH = node.id === 'root' ? 20 : 15;
+    const offsetY = lines.length > 1 ? (i - (lines.length - 1) / 2) * lineH : 0;
+    text.setAttribute('y', offsetY);
+    text.textContent = line;
+    grp.appendChild(text);
+  });
+
+  // Tooltip
+  if (node.details) {
+    grp.addEventListener('mouseenter', e => {
+      tooltip.innerHTML = `<strong>${node.label.replace('\n', ' ')}</strong>${node.details.replace(/\n/g, '<br>')}`;
+      tooltip.classList.add('visible');
+    });
+    grp.addEventListener('mousemove', e => {
+      tooltip.style.left = (e.clientX + 14) + 'px';
+      tooltip.style.top = (e.clientY - 10) + 'px';
+    });
+    grp.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  }
+
+  g.appendChild(grp);
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  svg.setAttribute('width', window.innerWidth);
+  svg.setAttribute('height', window.innerHeight - 44);
+});
+</script>
+</body>
+</html>
